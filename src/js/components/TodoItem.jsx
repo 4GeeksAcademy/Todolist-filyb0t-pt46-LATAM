@@ -2,9 +2,15 @@ import React from "react";
 
 const TodoItem = ({ item, index, onDeleteTask }) => {
   return (
-    <li key={index}>
-      {item.label}
-      <i className="fas fa-trash-alt" onClick={() => onDeleteTask(index)}></i>
+    <li className="task-item">
+      <span>{item.label}</span>
+      <button 
+        className="delete-btn"
+        onClick={() => onDeleteTask(index)}
+        aria-label="Eliminar tarea"
+      >
+        ×
+      </button>
     </li>
   );
 };

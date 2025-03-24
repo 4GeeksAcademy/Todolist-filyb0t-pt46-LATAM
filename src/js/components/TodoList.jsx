@@ -19,14 +19,18 @@ const TodoList = ({
           setInputValue={setInputValue}
           onCreateTask={onCreateTask}
         />
-        {todos.map((item, index) => (
-          <TodoItem
-            key={index}
-            item={item}
-            index={index}
-            onDeleteTask={onDeleteTask}
-          />
-        ))}
+        {todos.length === 0 ? (
+  <li className="empty-message">No hay tareas pendientes</li>
+) : (
+  todos.map((item, index) => (
+    <TodoItem
+      key={index}
+      item={item}
+      index={index}
+      onDeleteTask={onDeleteTask}
+    />
+  ))
+)}
       </ul>
       <button onClick={onDeleteAll}>Borrar todo</button>
     </div>
