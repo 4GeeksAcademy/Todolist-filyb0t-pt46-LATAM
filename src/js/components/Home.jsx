@@ -1,115 +1,76 @@
-import React, { useEffect, useState } from "react";
-import TodoList from "/src/js/components/TodoList";
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-const urlBase = "https://playground.4geeks.com/apis/fake/todos/user/filyb0t";
+const Home = () => {
+    const [newTask, setNewTask] = useState("");
+    const [todos, setTodos] = useState([]);
+    const [hoverIndex, setHoverIndex] = useState(null);
 
-const App = () => {
-  const [inputValue, setInputValue] = useState("");
-  const [todos, setTodos] = useState([]);
+    const addTask = () => {
+        if (newTask.trim() !== "") {
+            setTodos([...todos, newTask]);
+            setNewTask("");
+        }
+    };
 
-  const getTask = async () => {
-    try {
-      let response = await fetch(urlBase);
-      let data = await response.json();
+    const writeTask = (event) => {
+        setNewTask(event.target.value);
+    };
 
-      if (response.ok) {
-        setTodos(data);
-      } else if (response.status === 404) {
-        await createUser();
-        await getTask();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+    const handleKeyDown = (event) => {
+        if (event.key === "Enter") {
+            addTask();
+        }
+    };
 
-  useEffect(() => {
-    getTask();
-  }, []);
+    const deleteTask = (index) => {
+        const newList = todos.filter((_, i) => i !== index);
+        setTodos(newList);
+    };
 
-  const createUser = async () => {
-    try {
-      let response = await fetch(urlBase, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      });
-      if (response.ok) {
-        console.log("Usuario creado con éxito.");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteTask = async (index) => {
-    try {
-      let updatedTodos = [...todos];
-      updatedTodos.splice(index, 1);
-      setTodos(updatedTodos);
-
-      let response = await fetch(urlBase, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedTodos),
-      });
-
-      if (response.ok) {
-        console.log("Tarea eliminada con éxito.");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const createTask = async () => {
-    if (!inputValue.trim()) return;
-
-    try {
-      const newTask = { label: inputValue, done: false };
-      const updatedTodos = [...todos, newTask];
-      setTodos(updatedTodos);
-
-      let response = await fetch(urlBase, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedTodos),
-      });
-
-      if (response.ok) {
-        setInputValue("");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteAll = async () => {
-    await fetch(urlBase, { method: "DELETE" });
-    await fetch(urlBase, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify([])
-    });
-    setTodos([]);
-  };
-
-  return (
-    <TodoList
-      todos={todos}
-      inputValue={inputValue}
-      setInputValue={setInputValue}
-      onCreateTask={createTask}
-      onDeleteTask={deleteTask}
-      onDeleteAll={deleteAll}
-    />
-  );
+    return (
+        <div className="container mt-5">
+            <h1 className="text-center text-secondary">Todo List</h1>
+            <div className="input-group mb-3">
+                <input 
+                    type="text" 
+                    className="form-control" 
+                    placeholder="Escribe una tarea..." 
+                    value={newTask} 
+                    onChange={writeTask}
+                    onKeyDown={handleKeyDown}
+                />
+            </div>
+            {todos.length === 0 ? (
+                <p className="text-center text-muted">No hay tareas pendientes</p>
+            ) : (
+                <ul className="list-group">
+                    {todos.map((todo, index) => (
+                        <li 
+                            key={index} 
+                            className="list-group-item d-flex justify-content-between align-items-center"
+                            onMouseEnter={() => setHoverIndex(index)}
+                            onMouseLeave={() => setHoverIndex(null)}
+                            style={{ padding: "8px 12px" }}
+                        >
+                            <span className="flex-grow-1">{todo}</span>
+                            {hoverIndex === index && (
+                                <div className="d-flex justify-content-end" style={{ minWidth: "30px" }}>
+                                    <button 
+                                        className="btn btn-danger btn-sm"
+                                        style={{ padding: "0px 4px", fontSize: "10px", lineHeight: "1", minWidth: "20px", minHeight: "20px" }}
+                                        onClick={() => deleteTask(index)}
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    );
 };
 
-export default App;
+export default Home;
