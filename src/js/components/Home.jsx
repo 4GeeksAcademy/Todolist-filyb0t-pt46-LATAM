@@ -44,30 +44,35 @@ const Home = () => {
             {todos.length === 0 ? (
                 <p className="text-center text-muted">No hay tareas pendientes</p>
             ) : (
-                <ul className="list-group">
-                    {todos.map((todo, index) => (
-                        <li 
-                            key={index} 
-                            className="list-group-item d-flex justify-content-between align-items-center"
-                            onMouseEnter={() => setHoverIndex(index)}
-                            onMouseLeave={() => setHoverIndex(null)}
-                            style={{ padding: "8px 12px" }}
-                        >
-                            <span className="flex-grow-1">{todo}</span>
-                            {hoverIndex === index && (
-                                <div className="d-flex justify-content-end" style={{ minWidth: "30px" }}>
-                                    <button 
-                                        className="btn btn-danger btn-sm"
-                                        style={{ padding: "0px 4px", fontSize: "10px", lineHeight: "1", minWidth: "20px", minHeight: "20px" }}
-                                        onClick={() => deleteTask(index)}
-                                    >
-                                        ×
-                                    </button>
-                                </div>
-                            )}
-                        </li>
-                    ))}
-                </ul>
+                <>
+                    <ul className="list-group">
+                        {todos.map((todo, index) => (
+                            <li 
+                                key={index} 
+                                className="list-group-item d-flex justify-content-between align-items-center"
+                                onMouseEnter={() => setHoverIndex(index)}
+                                onMouseLeave={() => setHoverIndex(null)}
+                                style={{ padding: "8px 12px" }}
+                            >
+                                <span className="flex-grow-1">{todo}</span>
+                                {hoverIndex === index && (
+                                    <div className="d-flex justify-content-end" style={{ minWidth: "30px" }}>
+                                        <button 
+                                            className="btn btn-danger btn-sm"
+                                            style={{ padding: "0px 4px", fontSize: "10px", lineHeight: "1", minWidth: "20px", minHeight: "20px" }}
+                                            onClick={() => deleteTask(index)}
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="text-end mt-2 text-muted">
+                        {todos.length} tarea{todos.length !== 1 ? "s" : ""} restante{todos.length !== 1 ? "s" : ""}
+                    </p>
+                </>
             )}
         </div>
     );
